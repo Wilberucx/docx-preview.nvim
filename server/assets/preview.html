@@ -15,54 +15,70 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
       line-height: 1.6;
       color: #333;
-      background: #f5f5f5;
+      background: #e0e0e0;
+      padding: 2rem 0;
     }
     
-    .container {
+    #content-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      padding-bottom: 4rem;
+    }
+    
+    .page {
+      width: 100%;
       max-width: 900px;
-      margin: 0 auto;
-      padding: 2rem;
+      min-height: 297mm;
+      padding: 1in;
       background: white;
-      min-height: 100vh;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    
+    @media print {
+      body { background: white; padding: 0; }
+      #content-wrapper { gap: 0; padding-bottom: 0; display: block; }
+      .page {
+        box-shadow: none;
+        margin: 0;
+        padding: 0;
+        min-height: auto;
+        page-break-after: always;
+        break-after: page;
+      }
+      .status-bar, .toast { display: none !important; }
     }
     
     /* Markdown content styling */
-    .container h1, .container h2, .container h3, 
-    .container h4, .container h5, .container h6 {
+    .page h1, .page h2, .page h3, 
+    .page h4, .page h5, .page h6 {
       margin-top: 1.5em;
       margin-bottom: 0.5em;
       font-weight: 600;
       line-height: 1.3;
     }
     
-    .container h1 { font-size: 2em; border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
-    .container h2 { font-size: 1.5em; border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
-    .container h3 { font-size: 1.25em; }
-    .container h4 { font-size: 1em; }
+    .page h1 { font-size: 2em; border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
+    .page h2 { font-size: 1.5em; border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
+    .page h3 { font-size: 1.25em; }
+    .page h4 { font-size: 1em; }
     
-    .container p {
+    .page p {
       margin-bottom: 1em;
     }
     
-    .container hr {
-      border: 0;
-      border-top: 1px dashed #ccc;
-      margin: 2em 0;
-      page-break-after: always;
-      break-after: page;
-    }
-    
-    .container ul, .container ol {
+    .page ul, .page ol {
       margin-bottom: 1em;
       padding-left: 2em;
     }
     
-    .container li {
+    .page li {
       margin-bottom: 0.25em;
     }
     
-    .container code {
+    .page code {
       background: #f4f4f4;
       padding: 0.2em 0.4em;
       border-radius: 3px;
@@ -70,7 +86,7 @@
       font-size: 0.9em;
     }
     
-    .container pre {
+    .page pre {
       background: #f4f4f4;
       padding: 1em;
       border-radius: 5px;
@@ -78,12 +94,12 @@
       margin-bottom: 1em;
     }
     
-    .container pre code {
+    .page pre code {
       background: none;
       padding: 0;
     }
     
-    .container blockquote {
+    .page blockquote {
       border-left: 4px solid #ddd;
       padding-left: 1em;
       margin-left: 0;
@@ -91,34 +107,34 @@
       margin-bottom: 1em;
     }
     
-    .container table {
+    .page table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 1em;
     }
     
-    .container th, .container td {
+    .page th, .page td {
       border: 1px solid #ddd;
       padding: 0.5em;
       text-align: left;
     }
     
-    .container th {
+    .page th {
       background: #f4f4f4;
       font-weight: 600;
     }
     
-    .container img {
+    .page img {
       max-width: 100%;
       height: auto;
     }
     
-    .container a {
+    .page a {
       color: #0066cc;
       text-decoration: none;
     }
     
-    .container a:hover {
+    .page a:hover {
       text-decoration: underline;
     }
     
@@ -204,8 +220,10 @@
   </style>
 </head>
 <body>
-  <div class="container" id="content">
-    <div class="loading"></div>
+  <div id="content-wrapper">
+    <div class="page" id="initial-page">
+      <div class="loading"></div>
+    </div>
   </div>
   
   <div class="status-bar">
@@ -267,7 +285,13 @@
     function handleMessage(message) {
       switch (message.type) {
         case "update":
-          document.getElementById("content").innerHTML = message.html;
+          const htmlStr = message.html;
+          const pages = htmlStr.split(/<hr\s*\/?>/i);
+          let output = '';
+          pages.forEach(pageHtml => {
+             output += `<div class="page">${pageHtml}</div>`;
+          });
+          document.getElementById("content-wrapper").innerHTML = output;
           if (message.css !== undefined) {
             let styleTag = document.getElementById("custom-css");
             if (!styleTag) {

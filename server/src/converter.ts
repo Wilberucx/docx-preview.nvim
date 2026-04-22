@@ -34,6 +34,9 @@ async function runPandoc(
     args.push(...config.extraPandocArgs);
   }
 
+  // Add the lua filter to turn markdown horizontal rules into DOCX page breaks
+  args.push("--lua-filter=" + import.meta.dir + "/pagebreak.lua");
+
   logger.debug(`Running pandoc: ${config.pandocBin} ${args.join(" ")}`);
 
   const startTime = Date.now();
@@ -65,8 +68,12 @@ async function runMammoth(
   try {
     const options: Record<string, unknown> = {};
 
+    // Combine custom styleMap (if any) with the internal pagebreak rule
+    const internalStyleMap = "br[type='page'] => hr:fresh";
     if (styleMap) {
-      options.styleMap = styleMap;
+      options.styleMap = styleMap + "\n" + internalStyleMap;
+    } else {
+      options.styleMap = internalStyleMap;
     }
 
     const result = await mammoth.convertToHtml({ path: docxFile }, options);
