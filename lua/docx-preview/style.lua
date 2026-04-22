@@ -11,7 +11,7 @@ end
 -- Get the plugin's templates directory
 local function get_templates_dir()
   local plugin_root = vim.fn.fnamemodify(debug.getinfo(1).source:sub(2), ":p:h:h:h")
-  return plugin_root .. "/templates"
+  return plugin_root .. "/lua/docx-preview/templates"
 end
 
 -- Get companion CSS path for a given markdown file
