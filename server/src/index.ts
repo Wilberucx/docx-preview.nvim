@@ -87,27 +87,46 @@ async function handleCommand(cmd: Command, config: ServerConfig): Promise<void> 
 }
 
 async function handleConvert(file: string, config: ServerConfig, cssFile?: string): Promise<void> {
+  let css = "";
+  let dynamicStyleMap = "";
+
+  if (cssFile) {
+    try {
+      const cssFileObj = Bun.file(cssFile);
+      if (await cssFileObj.exists()) {
+        css = await cssFileObj.text();
+        
+        const classRegex = /\.([a-zA-Z0-9_-]+)\s*\{/g;
+        let match;
+        const classes = new Set<string>();
+        while ((match = classRegex.exec(css)) !== null) {
+          classes.add(match[1]);
+        }
+        
+        const rules: string[] = [];
+        for (const cls of classes) {
+          if (!["page", "container", "status-bar", "toast", "loading", "dot", "indicator", "close", "show"].includes(cls)) {
+            rules.push(`p[style-name='${cls}'] => p.${cls}`);
+            rules.push(`r[style-name='${cls}'] => span.${cls}`);
+          }
+        }
+        dynamicStyleMap = rules.join("\n");
+      }
+    } catch (e) {
+      logger.warn(`Failed to read CSS file ${cssFile}`);
+    }
+  }
+
   const converterConfig: ConverterConfig = {
     pandocBin: config.pandocBin,
     referenceDoc: config.referenceDoc,
     outputDir: config.outputDir,
     extraPandocArgs: config.extraPandocArgs,
     styleMapFile: config.styleMapFile,
+    dynamicStyleMap,
   };
 
   const result = await convert(file, converterConfig);
-
-  let css = "";
-  if (cssFile) {
-    try {
-      const cssFileObj = Bun.file(cssFile);
-      if (await cssFileObj.exists()) {
-        css = await cssFileObj.text();
-      }
-    } catch (e) {
-      logger.warn(`Failed to read CSS file ${cssFile}`);
-    }
-  }
 
   if (result.ok) {
     broadcast({ type: "update", html: result.html, css });

@@ -9,6 +9,7 @@ export interface ConverterConfig {
   outputDir: string;
   extraPandocArgs: string[];
   styleMapFile: string | null;
+  dynamicStyleMap?: string;
 }
 
 export type ConversionResult =
@@ -119,7 +120,12 @@ export async function convert(
   }
 
   const styleMap = await loadStyleMap(config.styleMapFile);
-  const mammothResult = await runMammoth(docxFile, styleMap);
+  let finalStyleMap = styleMap;
+  if (config.dynamicStyleMap) {
+    finalStyleMap = finalStyleMap ? finalStyleMap + "\n" + config.dynamicStyleMap : config.dynamicStyleMap;
+  }
+  
+  const mammothResult = await runMammoth(docxFile, finalStyleMap);
 
   await cleanup(docxFile);
 

@@ -202,6 +202,37 @@ function M.workspace_open()
   vim.cmd("edit " .. ws_dir)
 end
 
+function M.apply_style(opts)
+  local style_name = opts.args
+  if not style_name or style_name == "" then
+    vim.notify("docx-preview: Please provide a style name", vim.log.levels.ERROR)
+    return
+  end
+  
+  if opts.range == 2 then
+    -- Visual selection mode
+    local start_pos = vim.api.nvim_buf_get_mark(0, "<")
+    local end_pos = vim.api.nvim_buf_get_mark(0, ">")
+    
+    local row1, col1 = start_pos[1] - 1, start_pos[2]
+    local row2, col2 = end_pos[1] - 1, end_pos[2] + 1
+    
+    local ok, lines = pcall(vim.api.nvim_buf_get_text, 0, row1, col1, row2, col2, {})
+    if ok and lines and #lines > 0 then
+      lines[1] = "[" .. lines[1]
+      lines[#lines] = lines[#lines] .. "]{custom-style=\"" .. style_name .. "\"}"
+      vim.api.nvim_buf_set_text(0, row1, col1, row2, col2, lines)
+    else
+      vim.notify("docx-preview: Failed to apply style to selection", vim.log.levels.ERROR)
+    end
+  else
+    -- Normal mode: append to end of current line
+    local row = vim.api.nvim_win_get_cursor(0)[1] - 1
+    local line = vim.api.nvim_buf_get_lines(0, row, row + 1, false)[1]
+    vim.api.nvim_buf_set_lines(0, row, row + 1, false, { line .. " {custom-style=\"" .. style_name .. "\"}" })
+  end
+end
+
 function M.register()
   vim.api.nvim_create_user_command("DocxPreviewOpen", function()
     M.open()
@@ -256,6 +287,15 @@ function M.register()
     M.workspace_open()
   end, {
     desc = "Open workspace directory",
+  })
+
+  -- Style commands
+  vim.api.nvim_create_user_command("DocxStyleApply", function(opts)
+    M.apply_style(opts)
+  end, {
+    nargs = 1,
+    range = true,
+    desc = "Apply custom Pandoc style to current line or visual selection",
   })
 end
 
