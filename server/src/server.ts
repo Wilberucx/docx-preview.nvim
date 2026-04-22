@@ -18,8 +18,13 @@ export type WSMessage =
   | { type: "print" };
 
 const clients = new Set<ServerWebSocket>();
+let lastUpdateMessage: WSMessage | null = null;
 
 export function broadcast(message: WSMessage): void {
+  if (message.type === "update") {
+    lastUpdateMessage = message;
+  }
+  
   const data = JSON.stringify(message);
   for (const client of clients) {
     if (client.readyState === 1 /* WebSocket.OPEN */) {
@@ -58,6 +63,10 @@ export function createServer(config: ServerConfig) {
       open(ws) {
         logger.info("WebSocket client connected");
         clients.add(ws);
+
+        if (lastUpdateMessage) {
+          ws.send(JSON.stringify(lastUpdateMessage));
+        }
       },
 
       close(ws) {
