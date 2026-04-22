@@ -34,6 +34,25 @@ end
 
 local is_open = false
 
+-- Get current buffer's markdown filepath
+local function get_current_md_filepath()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local ft = vim.api.nvim_get_option_value("filetype", { buf = bufnr })
+
+  if ft ~= "markdown" then
+    vim.notify("docx-preview: Current buffer is not a markdown file", vim.log.levels.ERROR)
+    return nil
+  end
+
+  local filepath = vim.api.nvim_buf_get_name(bufnr)
+  if not filepath or filepath == "" then
+    vim.notify("docx-preview: Buffer has no filepath", vim.log.levels.ERROR)
+    return nil
+  end
+
+  return filepath
+end
+
 function M.open()
   lazy_load()
   local cfg = get_config.get()
@@ -114,24 +133,7 @@ function M.status()
   end
 end
 
--- Get current buffer's markdown filepath
-local function get_current_md_filepath()
-  local bufnr = vim.api.nvim_get_current_buf()
-  local ft = vim.api.nvim_get_option_value("filetype", { buf = bufnr })
 
-  if ft ~= "markdown" then
-    vim.notify("docx-preview: Current buffer is not a markdown file", vim.log.levels.ERROR)
-    return nil
-  end
-
-  local filepath = vim.api.nvim_buf_get_name(bufnr)
-  if not filepath or filepath == "" then
-    vim.notify("docx-preview: Buffer has no filepath", vim.log.levels.ERROR)
-    return nil
-  end
-
-  return filepath
-end
 
 -- Style commands
 function M.style_new()

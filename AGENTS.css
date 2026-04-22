@@ -1,0 +1,173 @@
+/* nvim-docx-preview — Word-like stylesheet */
+/* Edit variables here. Rules below inherit automatically. */
+
+:root {
+  /* --- Fonts --- */
+  --font-body: "Calibri", "Carlito", sans-serif;
+  --font-heading: "Calibri Light", "Carlito", sans-serif;
+  --font-mono: "Consolas", "Courier New", monospace;
+
+  /* --- Font sizes (pt units match Word) --- */
+  --size-body: 11pt;
+  --size-h1: 19pt;
+  --size-h2: 13pt;
+  --size-h3: 12pt;
+  --size-h4: 11pt;
+  --size-h5: 10pt;
+  --size-h6: 10pt;
+
+  /* --- Colors --- */
+  --color-body: #000000;
+  --color-heading: #1f3864;
+  --color-link: #0563c1;
+  --color-code-bg: #f2f2f2;
+  --color-table-head: #d6dce4;
+  --color-table-border: #bfc9ca;
+
+  /* --- Page (A4 default) --- */
+  --page-width: 21cm;
+  --margin-top: 2.54cm;
+  --margin-bottom: 2.54cm;
+  --margin-side: 2.54cm;
+
+  /* --- Spacing --- */
+  --line-height: 1.08;
+  --paragraph-space: 8pt;
+  --heading-space-before: 12pt;
+}
+
+/* ===================== DO NOT EDIT BELOW THIS LINE ===================== */
+/* Rules inherit from variables. Change the variables above, not the rules. */
+
+@page {
+  size: A4;
+  margin: var(--margin-top) var(--margin-side) var(--margin-bottom);
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--size-body);
+  color: var(--color-body);
+  line-height: var(--line-height);
+  max-width: var(--page-width);
+  margin: var(--margin-top) auto;
+  padding: 0 var(--margin-side);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+  margin-top: var(--heading-space-before);
+  margin-bottom: 4pt;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: var(--size-h1);
+  border-bottom: 1px solid var(--color-heading);
+  padding-bottom: 4pt;
+}
+h2 {
+  font-size: var(--size-h2);
+}
+h3 {
+  font-size: var(--size-h3);
+}
+h4 {
+  font-size: var(--size-h4);
+  font-style: italic;
+}
+h5 {
+  font-size: var(--size-h5);
+}
+h6 {
+  font-size: var(--size-h6);
+  color: #595959;
+}
+
+p {
+  margin-bottom: var(--paragraph-space);
+}
+
+a {
+  color: var(--color-link);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--color-code-bg);
+  padding: 0.1em 0.3em;
+  border-radius: 2px;
+}
+
+pre {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--color-code-bg);
+  padding: 1em;
+  overflow-x: auto;
+  border-left: 3px solid var(--color-heading);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+blockquote {
+  border-left: 3px solid var(--color-table-border);
+  margin-left: 0;
+  padding-left: 1em;
+  color: #595959;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--paragraph-space);
+  font-size: var(--size-body);
+}
+
+th {
+  background: var(--color-table-head);
+  border: 1px solid var(--color-table-border);
+  padding: 4pt 8pt;
+  font-weight: bold;
+  text-align: left;
+}
+
+td {
+  border: 1px solid var(--color-table-border);
+  padding: 4pt 8pt;
+}
+
+/* Page break — triggered by --- in Markdown (renders as <hr>) */
+hr {
+  page-break-after: always;
+  border: none;
+  height: 0;
+  margin: 0;
+}
+
+/* Print — hide browser chrome, enforce margins */
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+    max-width: none;
+  }
+  .status-bar,
+  .toast {
+    display: none !important;
+  }
+  a {
+    color: var(--color-link);
+    text-decoration: none;
+  }
+}

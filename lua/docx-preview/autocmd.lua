@@ -17,18 +17,12 @@ local function lazy_load()
   end
 end
 
-local function on_buf_write_post(bufnr)
+local function on_buf_write_post(filepath)
   lazy_load()
 
   local cfg = get_config()
 
   if not cfg.autocmd.enabled then
-    return
-  end
-
-  local filepath = vim.api.nvim_buf_get_name(bufnr)
-
-  if not filepath or filepath == "" then
     return
   end
 
@@ -62,12 +56,26 @@ function M.register()
     vim.api.nvim_create_autocmd(event, {
       group = augroup_id,
       callback = function(args)
-        -- Check if buffer filetype matches configured filetypes
         local buf_filetype = vim.bo[args.buf].filetype
-        if not vim.tbl_contains(cfg.autocmd.filetypes, buf_filetype) then
+        local is_md = vim.tbl_contains(cfg.autocmd.filetypes, buf_filetype)
+        local is_css = buf_filetype == "css"
+        
+        if not (is_md or is_css) then
           return
         end
-        on_buf_write_post(args.buf)
+        
+        local filepath = vim.api.nvim_buf_get_name(args.buf)
+        if not filepath or filepath == "" then return end
+        
+        local target_md = filepath
+        if is_css then
+          target_md = filepath:gsub("%.css$", ".md")
+          if vim.fn.filereadable(target_md) ~= 1 then
+            return
+          end
+        end
+        
+        on_buf_write_post(target_md)
       end,
       desc = "docx-preview: trigger conversion on " .. event,
     })

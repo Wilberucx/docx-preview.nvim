@@ -6,18 +6,18 @@
 
 ```
 ┌─────────────────────┐     ┌─────────────────────┐
-│     Neovim          │     │      Browser         │
+│     Neovim          │     │      Browser        │
 │                     │     │                     │
-│  edit .md ─────┐    │     │  preview.html      │
-│               │    │     │  ←── WebSocket   │
-│  BufWritePost │    │────▶│                  │
-│  autocmd      │    │     │  live HTML       │
-│               ▼    │     │  updates        │
-│  pandoc ────────────┼────▶│                  │
-│  (md → docx)       │     │    window.print() │
-│               ▼    │     │         (PDF)    │
-│  mammoth ───────────┘     │                  │
-│  (docx → HTML)         │     │                  │
+│  edit .md ─────┐    │     │  preview.html       │
+│                │    │     │  ←── WebSocket      │
+│  BufWritePost  │    │────▶│                     │
+│  autocmd       │    │     │  live HTML          │
+│                ▼    │     │  updates            │
+│  pandoc ────────────┼────▶│                     │
+│  (md → docx)        │     │    window.print()   │
+│                ▼    │     │         (PDF)       │
+│  mammoth ───────────┘     │                     │
+│  (docx → HTML)      │     │                     │
 └─────────────────────┘     └─────────────────────┘
 ```
 
@@ -36,19 +36,19 @@
 
 ## 📋 Requirements
 
-| Requirement | Version | Notes |
-|-------------|---------|-------|
-| Neovim | ≥ 0.9.0 | For modern Lua APIs |
-| Bun | ≥ 1.0 | For the preview server |
-| Pandoc | ≥ 3.0 | For md → docx conversion |
+| Requirement | Version | Notes                    |
+| ----------- | ------- | ------------------------ |
+| Neovim      | ≥ 0.9.0 | For modern Lua APIs      |
+| Bun         | ≥ 1.0   | For the preview server   |
+| Pandoc      | ≥ 3.0   | For md → docx conversion |
 
 ### Optional (for PDF export)
 
-| Tool | Priority |
-|------|----------|
+| Tool        | Priority                |
+| ----------- | ----------------------- |
 | wkhtmltopdf | 1st — best CSS fidelity |
-| weasyprint | 2nd — pure Python |
-| pdflatex | 3rd — fallback, no CSS |
+| weasyprint  | 2nd — pure Python       |
+| pdflatex    | 3rd — fallback, no CSS  |
 
 ---
 
@@ -175,34 +175,34 @@ require("docx-preview").setup({
 
 ### Preview commands (Phase 1)
 
-| Command | Description |
-|---------|-------------|
-| `:DocxPreviewOpen` | Open preview in browser |
-| `:DocxPreviewClose` | Stop preview server |
-| `:DocxPreviewToggle` | Toggle preview |
-| `:DocxPreviewStatus` | Show server status |
+| Command              | Description             |
+| -------------------- | ----------------------- |
+| `:DocxPreviewOpen`   | Open preview in browser |
+| `:DocxPreviewClose`  | Stop preview server     |
+| `:DocxPreviewToggle` | Toggle preview          |
+| `:DocxPreviewStatus` | Show server status      |
 
 ### Style commands (Phase 2)
 
-| Command | Description |
-|---------|-------------|
-| `:DocxStyleNew` | Generate companion CSS |
-| `:DocxStyleOpen` | Open CSS in split |
+| Command          | Description            |
+| ---------------- | ---------------------- |
+| `:DocxStyleNew`  | Generate companion CSS |
+| `:DocxStyleOpen` | Open CSS in split      |
 
 ### Export commands (Phase 2)
 
-| Command | Description |
-|---------|-------------|
-| `:DocxExportHtml` | Export to HTML |
-| `:DocxExportPdf` | Export to PDF |
-| `:DocxExportDocx` | Export to DOCX |
+| Command             | Description       |
+| ------------------- | ----------------- |
+| `:DocxExportHtml`   | Export to HTML    |
+| `:DocxExportPdf`    | Export to PDF     |
+| `:DocxExportDocx`   | Export to DOCX    |
 | `:DocxPreviewPrint` | Print via browser |
 
 ### Workspace commands (Phase 3)
 
-| Command | Description |
-|---------|-------------|
-| `:DocxWorkspaceCopy` | Copy to workspace |
+| Command              | Description        |
+| -------------------- | ------------------ |
+| `:DocxWorkspaceCopy` | Copy to workspace  |
 | `:DocxWorkspaceOpen` | Open workspace dir |
 
 ---
@@ -283,25 +283,25 @@ The default CSS template uses CSS custom properties. Edit the variables in your 
 ```css
 :root {
   /* Fonts */
-  --font-body:    "Calibri", "Carlito", sans-serif;
+  --font-body: "Calibri", "Carlito", sans-serif;
   --font-heading: "Calibri Light", "Carlito", sans-serif;
-  --font-mono:    "Consolas", "Courier New", monospace;
+  --font-mono: "Consolas", "Courier New", monospace;
 
   /* Font sizes (pt units match Word) */
   --size-body: 11pt;
-  --size-h1:   16pt;
-  --size-h2:   13pt;
+  --size-h1: 16pt;
+  --size-h2: 13pt;
 
   /* Colors */
-  --color-body:        #000000;
-  --color-heading:     #1F3864;
-  --color-link:        #0563C1;
+  --color-body: #000000;
+  --color-heading: #1f3864;
+  --color-link: #0563c1;
 
   /* Page (A4) */
-  --page-width:    21cm;
-  --margin-top:    2.54cm;
+  --page-width: 21cm;
+  --margin-top: 2.54cm;
   --margin-bottom: 2.54cm;
-  --margin-side:   2.54cm;
+  --margin-side: 2.54cm;
 }
 ```
 
@@ -394,3 +394,4 @@ MIT
 - [mammoth.js](https://github.com/mwilliamson/mammoth.js) — Best docx → HTML converter
 - [Pandoc](https://pandoc.org/) — The conversion backbone
 - [Bun](https://bun.sh/) — Fast server runtime
+
