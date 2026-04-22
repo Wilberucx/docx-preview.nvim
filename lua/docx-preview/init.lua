@@ -52,7 +52,7 @@ function M.setup(opts)
     vim.defer_fn(function()
       local ok, err = server.start()
       if not ok then
-        vim.notify("docx-preview: Auto-start failed: " .. err, vim.log.levels.WARN)
+        vim.notify("docx-preview: Auto-start failed: " .. (err or "unknown error"), vim.log.levels.WARN)
       end
     end, 100)
   end
