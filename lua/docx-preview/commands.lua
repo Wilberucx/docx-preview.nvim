@@ -89,7 +89,7 @@ function M.open()
   server.send_command({
     cmd = "convert",
     file = filepath,
-    styleMapFile = css_path,
+    cssFile = css_path,
   })
 
   if css_path then

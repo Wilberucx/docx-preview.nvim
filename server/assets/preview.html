@@ -260,6 +260,15 @@
       switch (message.type) {
         case "update":
           document.getElementById("content").innerHTML = message.html;
+          if (message.css !== undefined) {
+            let styleTag = document.getElementById("custom-css");
+            if (!styleTag) {
+              styleTag = document.createElement("style");
+              styleTag.id = "custom-css";
+              document.head.appendChild(styleTag);
+            }
+            styleTag.textContent = message.css;
+          }
           break;
 
         case "error":

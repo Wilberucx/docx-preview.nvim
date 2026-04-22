@@ -36,7 +36,7 @@ local function on_buf_write_post(filepath)
   get_server.send_command({
     cmd = "convert",
     file = filepath,
-    styleMapFile = css_path,
+    cssFile = css_path,
   })
 end
 

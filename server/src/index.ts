@@ -55,14 +55,14 @@ function parseArgs(): Partial<ServerConfig> {
 }
 
 type Command =
-  | { cmd: "convert"; file: string; styleMapFile?: string }
+  | { cmd: "convert"; file: string; cssFile?: string }
   | { cmd: "print" }
   | { cmd: "shutdown" };
 
 async function handleCommand(cmd: Command, config: ServerConfig): Promise<void> {
   switch (cmd.cmd) {
     case "convert": {
-      await handleConvert(cmd.file, config, cmd.styleMapFile);
+      await handleConvert(cmd.file, config, cmd.cssFile);
       console.log(
         JSON.stringify({
           status: "converted",
@@ -86,19 +86,31 @@ async function handleCommand(cmd: Command, config: ServerConfig): Promise<void> 
   }
 }
 
-async function handleConvert(file: string, config: ServerConfig, styleMapFile?: string): Promise<void> {
+async function handleConvert(file: string, config: ServerConfig, cssFile?: string): Promise<void> {
   const converterConfig: ConverterConfig = {
     pandocBin: config.pandocBin,
     referenceDoc: config.referenceDoc,
     outputDir: config.outputDir,
     extraPandocArgs: config.extraPandocArgs,
-    styleMapFile: styleMapFile || config.styleMapFile,
+    styleMapFile: config.styleMapFile,
   };
 
   const result = await convert(file, converterConfig);
 
+  let css = "";
+  if (cssFile) {
+    try {
+      const cssFileObj = Bun.file(cssFile);
+      if (await cssFileObj.exists()) {
+        css = await cssFileObj.text();
+      }
+    } catch (e) {
+      logger.warn(`Failed to read CSS file ${cssFile}`);
+    }
+  }
+
   if (result.ok) {
-    broadcast({ type: "update", html: result.html });
+    broadcast({ type: "update", html: result.html, css });
     logger.info(`Converted ${file} in ${result.durationMs}ms`);
   } else {
     broadcast({ type: "error", message: result.error });

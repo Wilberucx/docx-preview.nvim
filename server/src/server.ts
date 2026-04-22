@@ -13,7 +13,7 @@ export interface ServerConfig {
 }
 
 export type WSMessage =
-  | { type: "update"; html: string }
+  | { type: "update"; html: string; css?: string }
   | { type: "error"; message: string }
   | { type: "print" };
 
