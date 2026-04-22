@@ -43,7 +43,7 @@ function M.open()
   if not server.is_running() then
     local ok, err = server.start()
     if not ok then
-      vim.notify("docx-preview: Failed to start server: " .. err, vim.log.levels.ERROR)
+      vim.notify("docx-preview: Failed to start server: " .. (err or "unknown error"), vim.log.levels.ERROR)
       return
     end
   end

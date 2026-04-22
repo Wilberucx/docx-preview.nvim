@@ -109,36 +109,8 @@ function M.setup(opts)
 
   local user_config = vim.deepcopy(defaults)
 
-  if opts.binaries then
-    vim.tbl_deep_extend("force", user_config.binaries, opts.binaries)
-  end
-  if opts.server then
-    vim.tbl_deep_extend("force", user_config.server, opts.server)
-  end
-  if opts.conversion then
-    vim.tbl_deep_extend("force", user_config.conversion, opts.conversion)
-  end
-  if opts.mammoth then
-    vim.tbl_deep_extend("force", user_config.mammoth, opts.mammoth)
-  end
-  if opts.browser then
-    vim.tbl_deep_extend("force", user_config.browser, opts.browser)
-  end
-  if opts.autocmd then
-    vim.tbl_deep_extend("force", user_config.autocmd, opts.autocmd)
-  end
-  if opts.log then
-    vim.tbl_deep_extend("force", user_config.log, opts.log)
-  end
-  if opts.export then
-    vim.tbl_deep_extend("force", user_config.export, opts.export)
-  end
-  if opts.style then
-    vim.tbl_deep_extend("force", user_config.style, opts.style)
-  end
-  if opts.workspace then
-    vim.tbl_deep_extend("force", user_config.workspace, opts.workspace)
-  end
+  -- vim.tbl_deep_extend is a pure function — result must be assigned back
+  user_config = vim.tbl_deep_extend("force", user_config, opts)
 
   validate_config(user_config)
   validate_binaries(user_config)

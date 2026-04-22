@@ -5,7 +5,7 @@ local get_sanitizer = nil
 
 local function lazy_load()
   if not get_config then
-    get_config = require("docx-preview.config").get()
+    get_config = require("docx-preview.config")
   end
   if not get_sanitizer then
     get_sanitizer = require("docx-preview.sanitizer")

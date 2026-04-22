@@ -89,7 +89,7 @@ function M.open_browser(url)
   vim.validate({ url = { url, "string" } })
 
   local open_cmd = M.get_open_cmd()
-  M.log("debug", string.Sprintf("Opening URL: %s with command: %s", url, open_cmd))
+  M.log("debug", string.format("Opening URL: %s with command: %s", url, open_cmd))
 
   if type(open_cmd) == "function" then
     open_cmd(url)

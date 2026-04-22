@@ -22,7 +22,7 @@ const clients = new Set<ServerWebSocket>();
 export function broadcast(message: WSMessage): void {
   const data = JSON.stringify(message);
   for (const client of clients) {
-    if (client.readyState === WebSocket.OPEN) {
+    if (client.readyState === 1 /* WebSocket.OPEN */) {
       client.send(data);
     }
   }

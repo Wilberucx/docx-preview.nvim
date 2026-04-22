@@ -54,7 +54,7 @@ function M.start()
   local server_entry = get_server_entrypoint()
   if vim.fn.filereadable(server_entry) == 0 then
     util.log("error", string.format("Server entrypoint not found: %s", server_entry))
-    return false
+    return false, string.format("Server entrypoint not found: %s", server_entry)
   end
 
   util.ensure_dir(cfg.conversion.output_dir)
@@ -133,7 +133,7 @@ function M.start()
 
   if state.job <= 0 then
     util.log("error", "Failed to start server job")
-    return false
+    return false, "Failed to start server job"
   end
 
   state.pid = vim.fn.jobpid(state.job)
@@ -148,7 +148,7 @@ function M.start()
   if not ok then
     util.log("error", "Server startup timeout - no 'ready' message received")
     M.stop()
-    return false
+    return false, "Server startup timeout - no 'ready' message received"
   end
 
   return true
