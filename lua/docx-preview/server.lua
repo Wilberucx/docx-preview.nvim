@@ -37,7 +37,7 @@ local function get_server_entrypoint()
   local plugin_root = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h:h:h:h")
   -- Fallback to lazy if not found
   if vim.fn.isdirectory(plugin_root) == 0 then
-    plugin_root = vim.fn.stdpath("data") .. "/lazy/nvim-docx-preview"
+    plugin_root = vim.fn.stdpath("data") .. "/lazy/docx-preview.nvim"
   end
   return plugin_root .. "/server/src/index.ts"
 end
