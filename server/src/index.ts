@@ -141,16 +141,16 @@ async function main() {
   const url = `http://${config.host}:${config.port}`;
   logger.info(`Server started on ${url}`);
 
+  const reader = Bun.stdin.stream().getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+
   console.log(
     JSON.stringify({
       status: "ready",
       url: url,
     })
   );
-
-  const reader = Bun.stdin.stream().getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
 
   while (true) {
     const { done, value } = await reader.read();
