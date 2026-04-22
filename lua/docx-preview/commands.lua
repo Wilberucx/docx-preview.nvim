@@ -135,59 +135,14 @@ end
 
 
 
--- Style commands
-function M.style_new()
+function M.export(format)
   lazy_load()
   local filepath = get_current_md_filepath()
   if not filepath then
     return
   end
 
-  local ok = get_style.generate(filepath)
-  if ok then
-    vim.notify("docx-preview: Generated companion CSS", vim.log.levels.INFO)
-  end
-end
-
-function M.style_open()
-  lazy_load()
-  local filepath = get_current_md_filepath()
-  if not filepath then
-    return
-  end
-
-  get_style.open_split(filepath)
-end
-
--- Export commands
-function M.export_html()
-  lazy_load()
-  local filepath = get_current_md_filepath()
-  if not filepath then
-    return
-  end
-
-  get_export.export(filepath, "html")
-end
-
-function M.export_pdf()
-  lazy_load()
-  local filepath = get_current_md_filepath()
-  if not filepath then
-    return
-  end
-
-  get_export.export(filepath, "pdf")
-end
-
-function M.export_docx()
-  lazy_load()
-  local filepath = get_current_md_filepath()
-  if not filepath then
-    return
-  end
-
-  get_export.export(filepath, "docx")
+  get_export.export(filepath, format)
 end
 
 -- Print command - sends print command to server
@@ -272,36 +227,15 @@ function M.register()
     desc = "Show docx preview status",
   })
 
-  -- Style commands
-  vim.api.nvim_create_user_command("DocxStyleNew", function()
-    M.style_new()
+  -- Consolidated Export command
+  vim.api.nvim_create_user_command("DocxExport", function(opts)
+    local format = opts.args
+    if format == "" then format = "docx" end
+    M.export(format)
   end, {
-    desc = "Generate companion CSS for current markdown file",
-  })
-
-  vim.api.nvim_create_user_command("DocxStyleOpen", function()
-    M.style_open()
-  end, {
-    desc = "Open companion CSS in split",
-  })
-
-  -- Export commands
-  vim.api.nvim_create_user_command("DocxExportHtml", function()
-    M.export_html()
-  end, {
-    desc = "Export current file to HTML",
-  })
-
-  vim.api.nvim_create_user_command("DocxExportPdf", function()
-    M.export_pdf()
-  end, {
-    desc = "Export current file to PDF",
-  })
-
-  vim.api.nvim_create_user_command("DocxExportDocx", function()
-    M.export_docx()
-  end, {
-    desc = "Export current file to DOCX",
+    nargs = "?",
+    complete = function() return { "html", "pdf", "docx" } end,
+    desc = "Export current file to format (html, pdf, docx)",
   })
 
   -- Print command
