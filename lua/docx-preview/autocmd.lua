@@ -36,9 +36,13 @@ local function on_buf_write_post(bufnr)
     return
   end
 
+  local get_style = require("docx-preview.style")
+  local css_path = get_style.get_companion_css(filepath)
+
   get_server.send_command({
     cmd = "convert",
     file = filepath,
+    styleMapFile = css_path,
   })
 end
 

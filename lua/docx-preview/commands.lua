@@ -39,7 +39,13 @@ function M.open()
   local cfg = get_config.get()
   local utils = get_utils
   local server = get_server
+  local style = get_style
   
+  local filepath = get_current_md_filepath()
+  if not filepath then
+    return
+  end
+
   if not server.is_running() then
     local ok, err = server.start()
     if not ok then
@@ -52,6 +58,29 @@ function M.open()
   utils.open_browser(url)
   
   is_open = true
+
+  -- Handle CSS companion automatically
+  local css_path = style.get_companion_css(filepath)
+  if not css_path then
+    style.generate(filepath)
+    css_path = style.get_companion_css(filepath)
+  end
+
+  -- Immediately convert so the browser doesn't say "waiting for content"
+  server.send_command({
+    cmd = "convert",
+    file = filepath,
+    styleMapFile = css_path,
+  })
+
+  if css_path then
+    -- Check if it's already open in a window
+    local bufnr = vim.fn.bufnr(css_path)
+    local winnr = vim.fn.bufwinnr(bufnr)
+    if winnr == -1 then
+      vim.cmd("vsplit " .. vim.fn.fnameescape(css_path))
+    end
+  end
 end
 
 function M.close()

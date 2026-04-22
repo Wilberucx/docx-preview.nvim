@@ -8,11 +8,11 @@ local defaults = {
   server = {
     port = 8765,
     host = "127.0.0.1",
-    autostart = true,
+    autostart = false,
   },
   conversion = {
     reference_doc = nil,
-    output_dir = vim.fn.stdpath("cache") .. "/docx-preview",
+    output_dir = "/tmp/docx-preview",
     extra_pandoc_args = {},
   },
   mammoth = {

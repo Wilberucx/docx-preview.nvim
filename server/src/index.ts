@@ -55,14 +55,14 @@ function parseArgs(): Partial<ServerConfig> {
 }
 
 type Command =
-  | { cmd: "convert"; file: string }
+  | { cmd: "convert"; file: string; styleMapFile?: string }
   | { cmd: "print" }
   | { cmd: "shutdown" };
 
 async function handleCommand(cmd: Command, config: ServerConfig): Promise<void> {
   switch (cmd.cmd) {
     case "convert": {
-      await handleConvert(cmd.file, config);
+      await handleConvert(cmd.file, config, cmd.styleMapFile);
       console.log(
         JSON.stringify({
           status: "converted",
@@ -86,13 +86,13 @@ async function handleCommand(cmd: Command, config: ServerConfig): Promise<void> 
   }
 }
 
-async function handleConvert(file: string, config: ServerConfig): Promise<void> {
+async function handleConvert(file: string, config: ServerConfig, styleMapFile?: string): Promise<void> {
   const converterConfig: ConverterConfig = {
     pandocBin: config.pandocBin,
     referenceDoc: config.referenceDoc,
     outputDir: config.outputDir,
     extraPandocArgs: config.extraPandocArgs,
-    styleMapFile: config.styleMapFile,
+    styleMapFile: styleMapFile || config.styleMapFile,
   };
 
   const result = await convert(file, converterConfig);
