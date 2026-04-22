@@ -106,6 +106,7 @@ end
 
 -- Style commands
 function M.style_new()
+  lazy_load()
   local filepath = get_current_md_filepath()
   if not filepath then
     return
@@ -118,6 +119,7 @@ function M.style_new()
 end
 
 function M.style_open()
+  lazy_load()
   local filepath = get_current_md_filepath()
   if not filepath then
     return
@@ -128,6 +130,7 @@ end
 
 -- Export commands
 function M.export_html()
+  lazy_load()
   local filepath = get_current_md_filepath()
   if not filepath then
     return
@@ -137,6 +140,7 @@ function M.export_html()
 end
 
 function M.export_pdf()
+  lazy_load()
   local filepath = get_current_md_filepath()
   if not filepath then
     return
@@ -146,6 +150,7 @@ function M.export_pdf()
 end
 
 function M.export_docx()
+  lazy_load()
   local filepath = get_current_md_filepath()
   if not filepath then
     return
@@ -156,6 +161,7 @@ end
 
 -- Print command - sends print command to server
 function M.print()
+  lazy_load()
   local server = get_server
 
   if not server.is_running() then
@@ -178,6 +184,7 @@ end
 
 -- Workspace commands
 function M.workspace_copy()
+  lazy_load()
   local filepath = get_current_md_filepath()
   if not filepath then
     return
@@ -198,6 +205,7 @@ function M.workspace_copy()
 end
 
 function M.workspace_open()
+  lazy_load()
   local ws_dir = get_workspace.get_workspace_dir()
   if not ws_dir then
     vim.notify("docx-preview: workspace.dir not configured", vim.log.levels.ERROR)
